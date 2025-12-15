@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OwepBECTHNK | BIO SYSTEM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 40, 0, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 60, 0, 0.1) 0%, transparent 20%);
+        }
+        
+        /* Эффект сканирования */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 0, 0.8) 50%, 
+                transparent 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.9);
+            z-index: 100;
+            animation: scan 3.5s linear infinite;
+            transform: translateY(-100%);
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            10% { transform: translateY(0); }
+            90% { transform: translateY(100vh); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Эффект сетки */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+        
+        /* Парящие частицы */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: rgba(0, 255, 0, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Текст с эффектом мерцания */
+        .glitch-text {
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+            position: relative;
+            animation: glitch 8s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 95%, 100% { 
+                text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+                transform: translateX(0);
+            }
+            96% { 
+                text-shadow: 2px 0 5px #ff00ff, -2px 0 5px #00ffff;
+                transform: translateX(-2px);
+            }
+            97% { 
+                text-shadow: -3px 0 5px #00ffff, 3px 0 5px #ff00ff;
+                transform: translateX(3px);
+            }
+            98% { 
+                text-shadow: 1px 0 5px #ffff00, -1px 0 5px #00ffff;
+                transform: translateX(-1px);
+            }
+        }
+        
+        /* Контейнер */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            border: 1px solid #00ff00;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 0, 0.5),
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+            padding: 25px;
+            background-color: rgba(5, 15, 5, 0.85);
+            animation: containerGlow 6s infinite alternate;
+            border-radius: 3px;
+        }
+        
+        @keyframes containerGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 15px rgba(0, 255, 0, 0.5),
+                    inset 0 0 20px rgba(0, 255, 0, 0.1);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 25px rgba(0, 255, 0, 0.8),
+                    inset 0 0 30px rgba(0, 255, 0, 0.2);
+            }
+        }
+        
+        /* Заголовок */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #00ff00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                #00ff00, 
+                transparent);
+            animation: borderFlow 3s infinite linear;
+        }
+        
+        @keyframes borderFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            color: #00ff00;
+            position: relative;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #00aa00;
+            animation: subtitlePulse 4s infinite;
+        }
+        
+        @keyframes subtitlePulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* Секции */
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #008800;
+            background-color: rgba(0, 20, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 0, 0.1), 
+                transparent);
+            animation: sectionShine 8s infinite;
+        }
+        
+        @keyframes sectionShine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            position: relative;
+        }
+        
+        .section-title i {
+            margin: 0 10px;
+            animation: iconSpin 10s infinite linear;
+        }
+        
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Элементы информации */
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 0;
+            border-bottom: 1px dotted #004400;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .info-item:hover {
+            background-color: rgba(0, 40, 0, 0.2);
+            padding-left: 10px;
+            border-bottom-color: #00ff00;
+        }
+        
+        .info-item .key {
+            width: 150px;
+            color: #00cc00;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .info-item .key::after {
+            content: '>';
+            margin-left: 5px;
+            animation: keyArrow 2s infinite;
+        }
+        
+        @keyframes keyArrow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .info-item .key i {
+            margin-right: 8px;
+            animation: iconPulse 3s infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .info-item .value {
+            flex: 1;
+            position: relative;
+        }
+        
+        .info-item a {
+            color: #00ff00;
+            text-decoration: none;
+            border-bottom: 1px dashed #00ff00;
+            transition: all 0.3s;
+            position: relative;
+            padding: 2px 0;
+        }
+        
+        .info-item a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px #00ff00;
+            border-bottom: 1px solid #ffffff;
+            padding: 2px 5px;
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        
+        /* ASCII арт */
+        .ascii-art {
+            text-align: center;
+            font-size: 10px;
+            line-height: 1;
+            margin: 20px 0;
+            color: #00cc00;
+            white-space: pre;
+            overflow-x: auto;
+            padding: 15px;
+            background-color: rgba(0, 30, 0, 0.2);
+            border: 1px solid rgba(0, 100, 0, 0.3);
+            position: relative;
+            animation: asciiFloat 12s infinite ease-in-out;
+        }
+        
+        @keyframes asciiFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .ascii-art::before {
+            content: 'ASCII_ART_ACTIVE';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 8px;
+            color: #008800;
+            background-color: #0a0a0a;
+            padding: 0 5px;
+        }
+        
+        /* Футер */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #00ff00;
+            color: #008800;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                #00ff00, 
+                transparent);
+            animation: borderFlow 4s infinite linear reverse;
+        }
+        
+        /* Эффекты терминала */
+        .terminal-text {
+            color: #00ff00;
+            text-shadow: 0 0 5px currentColor;
+            position: relative;
+        }
+        
+        .blink {
+            animation: blink 1.2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: #00ff00;
+            margin-left: 2px;
+            animation: cursorBlink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Кнопки (для возможного расширения) */
+        .hacker-btn {
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .hacker-btn:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .hacker-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 0, 0.3), 
+                transparent);
+            transition: left 0.5s;
+        }
+        
+        .hacker-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .ascii-art {
+                font-size: 7px;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-item .key {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Линия сканирования -->
+    <div class="scan-line"></div>
+    
+    <!-- Сетка фона -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Парящие частицы -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="header">
+            <h1 class="glitch-text" id="main-title"></h1>
+            <div class="subtitle">// BIO SYSTEM v2.0 // ACCESS: <span class="blink">GRANTED</span></div>
+        </div>
+        
+        <!-- ASCII арт -->
+        <div class="ascii-art" id="ascii-art">
+⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣤⣤⣀⡀
+⠀⠀⠀⣠⡶⡿⢿⣿⣛⣟⣿⡿⢿⢿⣷⣦⡀
+⠀⢰⣯⣷⣿⣿⣿⢟⠃⢿⣟⣿⣿⣾⣷⣽⣺⢆⠀
+⠀⢸⣿⢿⣾⢧⣏⡴⠀⠈⢿⣘⣿⢿⣿⣿⣿⣿⡆
+⠀⢹⣿⢠⡶⠒⢶⠀⠀⣠⠒⠒⠢⡀⢿⣿⣿⣿⡇
+⠀⣿⣿⠸⣄⣠⡾⠀⠀⠻⣀⣀⡼⠁⢸⣿⣿⣿⣿
+⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⢸⣿⣿⣿
+⢰⣿⣿⠀⠀⠀⡔⠢⠤⠔⠒⢄⠀⠀⢸⣿⣿⣿⣿⡇
+⢸⣿⣿⣄⠀⠸⡀⠀⠀⠀⠀⢀⡇⠠⣸⣿⣿⣿⣿⡇
+⢸⣿⣿⣿⣷⣦⣮⣉⢉⠉⠩⠄⢴⣾⣿⣿⣿⣿⣿⡇
+⢸⣿⣿⢻⣿⣟⢟⡁⠀⠀⠀⠀⢇⠻⣿⣿⣿⣿⣿⡇
+⢸⠿⣿⡈⠋⠀⠀⡇⠀⠀⠀⢰⠃⢠⣿⡟⣿⣿⢻⡇
+        </div>
+        
+        <!-- Секция "Обо мне" -->
+        <div class="section">
+            <div class="section-title terminal-text">
+                <i class="fas fa-cross"></i> <span class="typewriter" data-text="ОБО МНЕ"></span> <i class="fas fa-cross"></i>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> ЛЕТ</div>
+                <div class="value"><span class="counter" data-target="17">0</span></div>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> ИМЯ</div>
+                <div class="value">@<span class="typewriter" data-text="OwepBECTHNK"></span></div>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> НОМЕР</div>
+                <div class="value">+1 <span class="terminal-text">🚫🚫🚫</span></div>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> КАСТА</div>
+                <div class="value">
+                    <a href="https://telegra.ph/kasta-12-15" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> https://telegra.ph/kasta-12-15
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция "Остальное" -->
+        <div class="section">
+            <div class="section-title terminal-text">
+                <i class="fas fa-heart"></i> <span class="typewriter" data-text="ОСТАЛЬНОЕ"></span> <i class="fas fa-heart"></i>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> УСЛОВИЯ</div>
+                <div class="value">не помогаю бесплатно <span class="terminal-text" id="smiley">☺️</span></div>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> TIMA</div>
+                <div class="value">
+                    <span class="terminal-text">@faroziagod @lomezevgod @Obyzava @ovigap</span>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="key"><i class="fas fa-circle"></i> Nicky Dark</div>
+                <div class="value">
+                    <a href="https://telegra.ph/Nicky-Dark-12-15" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> https://telegra.ph/Nicky-Dark-12-15
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Дополнительная интерактивная панель -->
+        <div class="section" style="text-align: center;">
+            <div class="section-title terminal-text">
+                <i class="fas fa-terminal"></i> СИСТЕМНЫЙ КОНТРОЛЬ <i class="fas fa-terminal"></i>
+            </div>
+            <div style="margin-top: 15px;">
+                <button class="hacker-btn" id="glitch-btn">АКТИВИРОВАТЬ ГЛИТЧ</button>
+                <button class="hacker-btn" id="scan-btn">ЗАПУСТИТЬ СКАН</button>
+                <button class="hacker-btn" id="matrix-btn">МАТРИЦА</button>
+            </div>
+            <div id="system-status" style="margin-top: 15px; font-size: 0.9rem;">
+                СТАТУС: <span class="terminal-text blink">НОРМАЛЬНЫЙ</span>
+            </div>
+        </div>
+        
+        <!-- Футер -->
+        <div class="footer">
+            <div class="terminal-text">
+                SYSTEM v2.0 | ENCRYPTION: <span class="blink">ACTIVE</span> | LAST UPDATE: <span id="current-date"></span>
+            </div>
+            <div style="margin-top: 10px;">
+                &copy; 2023 OwepBECTHNK | Все права защищены <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 3 + 1;
+                const posX = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 10;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            const mainTitle = document.getElementById('main-title');
+            const titleText = "OwepBESTHNK";
+            let titleIndex = 0;
+            
+            function typeTitle() {
+                if (titleIndex < titleText.length) {
+                    mainTitle.textContent += titleText.charAt(titleIndex);
+                    titleIndex++;
+                    setTimeout(typeTitle, 100 + Math.random() * 50); 
+                } else {
+                    const cursor = document.createElement('span');
+                    cursor.className = 'cursor';
+                    mainTitle.appendChild(cursor);
+                }
+            }
+            
+            setTimeout(typeTitle, 500);
+            
+            const typewriterElements = document.querySelectorAll('.typewriter');
+            typewriterElements.forEach(el => {
+                const text = el.getAttribute('data-text');
+                el.textContent = '';
+                let index = 0;
+                
+                function typeWriter() {
+                    if (index < text.length) {
+                        el.textContent += text.charAt(index);
+                        index++;
+                        setTimeout(typeWriter, 50);
+                    }
+                }
+                
+                setTimeout(typeWriter, 800 + Math.random() * 1000);
+            });
+            
+            const counterElements = document.querySelectorAll('.counter');
+            counterElements.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                let current = 0;
+                const increment = target / 50; 
+                
+                function updateCounter() {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.floor(current);
+                        setTimeout(updateCounter, 30);
+                    } else {
+                        counter.textContent = target;
+                    }
+                }
+                
+                setTimeout(updateCounter, 1500);
+            });
+            
+            const glitchBtn = document.getElementById('glitch-btn');
+            const scanBtn = document.getElementById('scan-btn');
+            const matrixBtn = document.getElementById('matrix-btn');
+            const systemStatus = document.getElementById('system-status');
+            const smiley = document.getElementById('smiley');
+            
+            const smileys = ['☺️', '😎', '👾', '🤖', '💀', '👻', '🖤'];
+            let smileyIndex = 0;
+            
+            setInterval(() => {
+                smileyIndex = (smileyIndex + 1) % smileys.length;
+                smiley.textContent = smileys[smileyIndex];
+            }, 3000);
+            
+            glitchBtn.addEventListener('click', function() {
+                document.body.classList.add('glitch-active');
+                
+                systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text" style="color:#ff00ff;">ГЛИТЧ АКТИВЕН</span>';
+                
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const flash = document.createElement('div');
+                        flash.style.position = 'fixed';
+                        flash.style.top = `${Math.random() * 100}%`;
+                        flash.style.left = `${Math.random() * 100}%`;
+                        flash.style.width = `${Math.random() * 200 + 50}px`;
+                        flash.style.height = `${Math.random() * 200 + 50}px`;
+                        flash.style.background = `radial-gradient(circle, rgba(${Math.random() > 0.5 ? '255,0,255' : '0,255,255'}, 0.3), transparent)`;
+                        flash.style.zIndex = '9999';
+                        flash.style.pointerEvents = 'none';
+                        flash.style.borderRadius = '50%';
+                        document.body.appendChild(flash);
+                        
+                        setTimeout(() => {
+                            flash.remove();
+                        }, 100);
+                    }, i * 100);
+                }
+                
+                setTimeout(() => {
+                    systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text blink">НОРМАЛЬНЫЙ</span>';
+                }, 3000);
+            });
+            
+            scanBtn.addEventListener('click', function() {
+                for (let i = 0; i < 3; i++) {
+                    const scanLine = document.createElement('div');
+                    scanLine.className = 'scan-line';
+                    scanLine.style.animationDelay = `${i * 0.5}s`;
+                    scanLine.style.opacity = '0.7';
+                    document.body.appendChild(scanLine);
+                    
+                    setTimeout(() => {
+                        scanLine.remove();
+                    }, 4000);
+                }
+                
+                systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text" style="color:#00ffff;">СКАНИРОВАНИЕ</span>';
+                
+                setTimeout(() => {
+                    systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text blink">НОРМАЛЬНЫЙ</span>';
+                }, 4000);
+            });
+            
+            matrixBtn.addEventListener('click', function() {
+                const container = document.querySelector('.container');
+                
+                systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text" style="color:#00ff00;">МАТРИЦА АКТИВНА</span>';
+                
+                const symbols = '01アイウエオカキクケコABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const symbol = document.createElement('div');
+                        symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                        symbol.style.position = 'fixed';
+                        symbol.style.color = '#00ff00';
+                        symbol.style.fontSize = `${Math.random() * 20 + 10}px`;
+                        symbol.style.left = `${Math.random() * 100}%`;
+                        symbol.style.top = '-50px';
+                        symbol.style.zIndex = '5';
+                        symbol.style.opacity = '0.7';
+                        symbol.style.pointerEvents = 'none';
+                        document.body.appendChild(symbol);
+                        
+                        const fallDuration = Math.random() * 3 + 2;
+                        symbol.animate([
+                            { transform: 'translateY(0)', opacity: 0.8 },
+                            { transform: `translateY(${window.innerHeight + 50}px)`, opacity: 0 }
+                        ], {
+                            duration: fallDuration * 1000,
+                            easing: 'linear'
+                        });
+                        
+                        setTimeout(() => {
+                            symbol.remove();
+                        }, fallDuration * 1000);
+                    }, i * 100);
+                }
+                
+                setTimeout(() => {
+                    systemStatus.innerHTML = 'СТАТУС: <span class="terminal-text blink">НОРМАЛЬНЫЙ</span>';
+                }, 5000);
+            });
+            
+            const currentDate = document.getElementById('current-date');
+            const now = new Date();
+            const formattedDate = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getFullYear()}`;
+            currentDate.textContent = formattedDate;
+            
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    const randomElement = document.querySelectorAll('.terminal-text')[Math.floor(Math.random() * document.querySelectorAll('.terminal-text').length)];
+                    if (randomElement) {
+                        const originalColor = randomElement.style.color;
+                        randomElement.style.color = Math.random() > 0.5 ? '#ff00ff' : '#00ffff';
+                        
+                        setTimeout(() => {
+                            randomElement.style.color = originalColor || '#00ff00';
+                        }, 100);
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
